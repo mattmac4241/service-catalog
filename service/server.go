@@ -15,7 +15,7 @@ func NewServer() *negroni.Negroni {
 
     n := negroni.Classic()
     mux := mux.NewRouter()
-    repo := &repoHandler{}
+    repo := &RepoHandler{}
     initRoutes(mux, formatter, repo)
     n.UseHandler(mux)
 

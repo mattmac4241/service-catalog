@@ -19,7 +19,7 @@ func postRegisterHandler(formatter *render.Render, repo repository) http.Handler
         }
         err = repo.registerService(service)
         if err != nil {
-            formatter.JSON(w, http.StatusInternalServerError, "Failed to create post.")
+            formatter.JSON(w, http.StatusInternalServerError, "Failed to register service.")
             return
         }
         formatter.JSON(w, http.StatusCreated, "Service succesfully registered.")

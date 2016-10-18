@@ -2,10 +2,18 @@ package service
 
 type repository interface {
     registerService(service Service) error
+    addSnapshot(snapshot SnapShot) error
 }
 
-type repoHandler struct{}
+type RepoHandler struct{}
 
-func (r *repoHandler) registerService(service Service) error {
-    return REDIS.Set(service.Name, service.URL, 0).Err()
+func (r *RepoHandler) registerService(service Service) error {
+    c := REDIS.Get()
+    defer c.Close()
+    _, err := c.Do("SET", service.Name, service.URL)
+    return err
+}
+
+func (r *RepoHandler) addSnapshot(snapshot SnapShot) error {
+    return DB.Create(&snapshot).Error
 }

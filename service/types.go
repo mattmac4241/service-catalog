@@ -6,9 +6,10 @@ import (
 
 type SnapShot struct {
     gorm.Model
-    Name       string
-    URL        string
-    Active     bool
+    Name            string
+    URL             string
+    Active          bool
+    ResponseStatus  int
 }
 
 type Service struct {

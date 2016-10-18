@@ -2,9 +2,6 @@ box: golang
 
 services:
     - redis
-    -
-
-
 dev:
   steps:
     - setup-go-workspace:
