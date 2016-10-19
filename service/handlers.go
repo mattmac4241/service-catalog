@@ -8,7 +8,7 @@ import (
     "github.com/unrolled/render"
 )
 
-func postRegisterHandler(formatter *render.Render, repo repository) http.HandlerFunc {
+func postRegisterServiceHandler(formatter *render.Render, repo repository) http.HandlerFunc {
     return func(w http.ResponseWriter, req *http.Request) {
         var service Service
         payload, _ := ioutil.ReadAll(req.Body)
@@ -29,13 +29,7 @@ func postRegisterHandler(formatter *render.Render, repo repository) http.Handler
 
 func getServicesHandler(formatter *render.Render, repo repository) http.HandlerFunc {
     return func(w http.ResponseWriter, req *http.Request) {
-        services := []Service{}
-        keys, _ := repo.GetAllKeys()
-        for _, key := range keys {
-            val, _ := repo.RedisGetValue(key)
-            service := Service{Name: key, URL: val}
-            services = append(services, service)
-        }
+        services := repo.getServices()
         formatter.JSON(w, http.StatusOK, services)
     }
 }

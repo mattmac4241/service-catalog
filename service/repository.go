@@ -9,6 +9,7 @@ type repository interface {
     addSnapshot(snapshot SnapShot) error
     GetAllKeys() ([]string, error)
     RedisGetValue(key string) (string, error)
+    getServices() []Service
 }
 
 type RepoHandler struct{}
@@ -38,4 +39,15 @@ func (r *RepoHandler) RedisGetValue(key string) (string, error ){
     reply, err := redis.Values(c.Do("MGET", key))
     redis.Scan(reply, &value)
     return value, err
+}
+
+func (r *RepoHandler) getServices() []Service {
+    services := []Service{}
+    keys, _ := r.GetAllKeys()
+    for _, key := range keys {
+       val, _ := r.RedisGetValue(key)
+       service := Service{Name: key, URL: val}
+       services = append(services, service)
+    }
+    return services
 }
