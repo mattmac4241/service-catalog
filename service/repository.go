@@ -7,6 +7,8 @@ import (
 type repository interface {
     registerService(service Service) error
     addSnapshot(snapshot SnapShot) error
+    GetAllKeys() ([]string, error)
+    RedisGetValue(key string) (string, error)
 }
 
 type RepoHandler struct{}

@@ -25,3 +25,17 @@ func postRegisterHandler(formatter *render.Render, repo repository) http.Handler
         formatter.JSON(w, http.StatusCreated, "Service succesfully registered.")
     }
 }
+
+
+func getServicesHandler(formatter *render.Render, repo repository) http.HandlerFunc {
+    return func(w http.ResponseWriter, req *http.Request) {
+        services := []Service{}
+        keys, _ := repo.GetAllKeys()
+        for _, key := range keys {
+            val, _ := repo.RedisGetValue(key)
+            service := Service{Name: key, URL: val}
+            services = append(services, service)
+        }
+        formatter.JSON(w, http.StatusOK, services)
+    }
+}
