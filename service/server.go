@@ -12,7 +12,6 @@ func NewServer() *negroni.Negroni {
         IndentJSON: true,
     })
 
-
     n := negroni.Classic()
     mux := mux.NewRouter()
     repo := &RepoHandler{}
