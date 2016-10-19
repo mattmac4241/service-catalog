@@ -7,7 +7,6 @@ import (
 	"os"
     "time"
 
-    "github.com/garyburd/redigo/redis"
     "github.com/joho/godotenv"
 	"github.com/mattmac4241/service-catalog/service"
 )
@@ -44,21 +43,12 @@ func pingServices() {
     serviceClient := service.PingWebClient{
         RootURL: "",
     }
-
     repo := service.RepoHandler{}
     for {
-		c := service.REDIS.Get()
-	    defer c.Close()
-        keys, err := redis.Strings(c.Do("KEYS", "*"))
-        if err != nil {
-            // handle error
-        }
-		fmt.Println(keys)
+		keys, _ := repo.GetAllKeys()
         for _, key := range keys {
-           var value2 string
-           reply, _ := redis.Values(c.Do("MGET", key))
-           redis.Scan(reply, &value2)
-           serviceClient.RootURL = value2
+           val, _ := repo.RedisGetValue(key)
+           serviceClient.RootURL = val
            serviceClient.Ping(key, repo)
         }
         time.Sleep(time.Second * 5)

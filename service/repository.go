@@ -1,5 +1,9 @@
 package service
 
+import (
+    "github.com/garyburd/redigo/redis"
+)
+
 type repository interface {
     registerService(service Service) error
     addSnapshot(snapshot SnapShot) error
@@ -16,4 +20,20 @@ func (r *RepoHandler) registerService(service Service) error {
 
 func (r *RepoHandler) addSnapshot(snapshot SnapShot) error {
     return DB.Create(&snapshot).Error
+}
+
+func (r *RepoHandler) GetAllKeys() ([]string, error) {
+    c := REDIS.Get()
+    defer c.Close()
+    keys, err := redis.Strings(c.Do("KEYS", "*"))
+    return keys, err
+}
+
+func (r *RepoHandler) RedisGetValue(key string) (string, error ){
+    c := REDIS.Get()
+    defer c.Close()
+    var value string
+    reply, err := redis.Values(c.Do("MGET", key))
+    redis.Scan(reply, &value)
+    return value, err
 }
